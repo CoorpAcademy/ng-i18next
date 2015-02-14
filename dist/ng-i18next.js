@@ -1,6 +1,6 @@
 /*!
- * ng-i18next - Version 0.3.4 - 2014-08-29
- * Copyright (c) 2014 Andre Meyering
+ * ng-i18next - Version 0.3.4 - 2015-02-14
+ * Copyright (c) 2015 Andre Meyering
  *
  * AngularJS filter and directive for i18next (i18next by Jan Mühlemann)
  *
@@ -21,10 +21,10 @@ angular.module('jm.i18next').provider('$i18next', function () {
 		 */
 		t = null,
 		translations = {},
-		globalOptions = null,
+		globalOptions = {},
 		triesToLoadI18next = 0;
 
-	self.options = {};
+	self.options = globalOptions;
 
 	self.$get = ['$rootScope', '$timeout', function ($rootScope, $timeout) {
 
@@ -122,7 +122,8 @@ angular.module('jm.i18next').provider('$i18next', function () {
 
 		$rootScope.$watch(function () { return $i18nextTanslate.options; }, function (newOptions, oldOptions) {
 			// Check whether there are new options and whether the new options are different from the old options.
-			if (!!newOptions && oldOptions !== newOptions) {
+			// Check if globalOptions
+			if (!!newOptions && (oldOptions !== newOptions || globalOptions!== newOptions)) {
 				optionsChange(newOptions, oldOptions);
 			}
 		}, true);
