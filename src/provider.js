@@ -16,11 +16,15 @@ angular.module('jm.i18next').provider('$i18next', function () {
 
 	self.$get = ['$rootScope', '$timeout', function ($rootScope, $timeout) {
 
-		function init(options) {
+		function init(options, store) {
 
 			if (window.i18n) {
 
-				window.i18n.init(options, function (localize) {
+				var newOptions = angular.copy(options);
+				if (store) {
+					newOptions.resStore = store;	
+				}
+				window.i18n.init(newOptions, function (localize) {
 
 					translations = {};
 
@@ -95,6 +99,10 @@ angular.module('jm.i18next').provider('$i18next', function () {
 				!!optionsObj.lng ? translations[optionsObj.lng][key] : translations['auto'][key];
 
 		}
+
+		$i18nextTanslate.setOptions = function (options, store) {
+			init(options, store);
+		};
 
 		$i18nextTanslate.debugMsg = [];
 
