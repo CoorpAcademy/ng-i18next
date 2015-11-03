@@ -30,8 +30,9 @@ angular.module('jm.i18next').provider('$i18next', function () {
 
 				i18nDeferred = $q.defer();
 
-				var newOptions = angular.copy(options);
+				var newOptions = options;
 				if (store) {
+					newOptions = angular.copy(options);
 					newOptions.resStore = store;
 				}
 				i18n.init(newOptions, function (err, localize) {
