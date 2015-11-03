@@ -1,5 +1,5 @@
 /*!
- * ng-i18next - Version 0.5.2 - 2015-07-09
+ * ng-i18next - Version 0.5.2 - 2015-11-03
  * Copyright (c) 2015 Andre Meyering
  *
  * AngularJS provider, filter and directive for i18next (i18next by Jan Mühlemann)
@@ -30,7 +30,7 @@ angular.module('jm.i18next').provider('$i18next', function () {
 
 		var i18nDeferred;
 
-		function init(options) {
+		function init(options, store) {
 
 			if (options.noConflict && window.i18n) {
 				window.i18n.noConflict();
@@ -42,7 +42,12 @@ angular.module('jm.i18next').provider('$i18next', function () {
 
 				i18nDeferred = $q.defer();
 
-				i18n.init(options, function (err, localize) {
+				var newOptions = options;
+				if (store) {
+					newOptions = angular.copy(options);
+					newOptions.resStore = store;
+				}
+				i18n.init(newOptions, function (err, localize) {
 
 					translations = {};
 
@@ -151,6 +156,10 @@ angular.module('jm.i18next').provider('$i18next', function () {
 
 		}
 
+		$i18nextTanslate.setOptions = function (options, store) {
+			init(options, store);
+		};
+
 		$i18nextTanslate.debugMsg = [];
 
 		$i18nextTanslate.options = self.options;
@@ -176,23 +185,6 @@ angular.module('jm.i18next').provider('$i18next', function () {
 	}];
 
 });
-
-angular.module('jm.i18next').filter('i18next', ['$i18next', function ($i18next) {
-
-	'use strict';
-
-	function i18nextFilter(string, options) {
-
-		return $i18next(string, options);
-
-	}
-
-	// https://docs.angularjs.org/guide/filter#stateful-filters
-	i18nextFilter.$stateful = true;
-
-	return i18nextFilter;
-
-}]);
 
 angular.module('jm.i18next').directive('ngI18next', ['$i18next', '$compile', '$parse', '$interpolate', '$sanitize',
 	function ($i18next, $compile, $parse, $interpolate, $sanitize) {
@@ -277,7 +269,7 @@ angular.module('jm.i18next').directive('ngI18next', ['$i18next', '$compile', '$p
 				var string = $i18next(parsedKey.key, i18nOptions);
 
 				if (parsedKey.options.attr === 'html') {
-					$element.empty().append(string);
+					$element.empty().append($sanitize(string));
 
 					/*
 					 * Now compile the content of the element and bind the variables to
@@ -411,5 +403,22 @@ angular.module('jm.i18next').directive('boI18next', ['$i18next', '$compile', fun
 		}
 
 	};
+
+}]);
+
+angular.module('jm.i18next').filter('i18next', ['$i18next', function ($i18next) {
+
+	'use strict';
+
+	function i18nextFilter(string, options) {
+
+		return $i18next(string, options);
+
+	}
+
+	// https://docs.angularjs.org/guide/filter#stateful-filters
+	i18nextFilter.$stateful = true;
+
+	return i18nextFilter;
 
 }]);

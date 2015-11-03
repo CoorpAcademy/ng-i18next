@@ -18,7 +18,7 @@ angular.module('jm.i18next').provider('$i18next', function () {
 
 		var i18nDeferred;
 
-		function init(options) {
+		function init(options, store) {
 
 			if (options.noConflict && window.i18n) {
 				window.i18n.noConflict();
@@ -30,7 +30,12 @@ angular.module('jm.i18next').provider('$i18next', function () {
 
 				i18nDeferred = $q.defer();
 
-				i18n.init(options, function (err, localize) {
+				var newOptions = options;
+				if (store) {
+					newOptions = angular.copy(options);
+					newOptions.resStore = store;
+				}
+				i18n.init(newOptions, function (err, localize) {
 
 					translations = {};
 
@@ -138,6 +143,10 @@ angular.module('jm.i18next').provider('$i18next', function () {
 			return !!lng ? translations[lng][key] : translations['auto'][key];
 
 		}
+
+		$i18nextTanslate.setOptions = function (options, store) {
+			init(options, store);
+		};
 
 		$i18nextTanslate.debugMsg = [];
 
