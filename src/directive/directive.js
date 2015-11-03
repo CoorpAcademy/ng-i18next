@@ -81,7 +81,7 @@ angular.module('jm.i18next').directive('ngI18next', ['$i18next', '$compile', '$p
 				var string = $i18next(parsedKey.key, i18nOptions);
 
 				if (parsedKey.options.attr === 'html') {
-					$element.empty().append(string);
+					$element.empty().append($sanitize(string));
 
 					/*
 					 * Now compile the content of the element and bind the variables to
