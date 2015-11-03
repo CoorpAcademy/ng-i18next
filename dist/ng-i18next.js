@@ -1,5 +1,5 @@
 /*!
- * ng-i18next - Version 0.5.2 - 2015-09-02
+ * ng-i18next - Version 0.5.2 - 2015-11-03
  * Copyright (c) 2015 Andre Meyering
  *
  * AngularJS provider, filter and directive for i18next (i18next by Jan Mühlemann)
@@ -42,8 +42,9 @@ angular.module('jm.i18next').provider('$i18next', function () {
 
 				i18nDeferred = $q.defer();
 
-				var newOptions = angular.copy(options);
+				var newOptions = options;
 				if (store) {
+					newOptions = angular.copy(options);
 					newOptions.resStore = store;
 				}
 				i18n.init(newOptions, function (err, localize) {
